@@ -30,6 +30,9 @@ $sprite-map-alt: '../media/sprites/rg-fcc-calculator-sprite_v1.png';
 $github-icon: '../media/icons/rg-fcc-icon-github_v1.svg';
 $github-icon-alt: '../media/icons/rg-fcc-icon-github_v1.png';
 
+$background: '../media/images/rg-fcc-calculator-background-pattern_v1.svg';
+$background-alt: '../media/images/rg-fcc-calculator-background-pattern_v1.png';
+
 $backspace-inactive: 0px 0px;
 $backspace-active: -53px 0px;
 $backspace-click: -106px 0px;
@@ -65,12 +68,10 @@ $github-icon-light:  0px 0px;
 		height: 100%;
 		width: 100%;
 	}
-
 	.middle {
 		display: table-cell;
 		vertical-align: middle;
 	}
-
 	.inner {
 		margin-left: auto;
 		margin-right: auto;
@@ -134,7 +135,13 @@ $github-icon-light:  0px 0px;
 }
 
 * { box-sizing: border-box; }
-html { background-color: $default-background; }
+html {
+	background-color: $default-background;
+	background: $default-background url($background-alt);
+	background-image: url($background), none;
+	background-repeat: repeat;
+	background-position: center center;
+}
 body {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
