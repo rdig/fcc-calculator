@@ -196,8 +196,9 @@ body {
 				color: $calculator-history-text-color;
 				span {
 					text-align: right;
-					margin-left: -100%;
+					margin-left: -1000000%;
 					float: right;
+					min-height: 20px;
 				}
 			}
 			.current {
@@ -209,8 +210,9 @@ body {
 				white-space: nowrap;
 				overflow: hidden;
 				span {
+					min-height: 67px;
 					text-align: right;
-					margin-left: -100%;
+					margin-left: -1000000%;
 				}
 				&.overflow {
 					border-color: $calculator-screen-overflow-border-color;
@@ -247,6 +249,7 @@ body {
 			}
 			&.operator {
 				background-color: $calculator-operator-key-initial-background;
+				transition: background-color 0.3s ease-in-out;
 				&:hover {
 					background-color: $calculator-operator-key-initial-hover-background;
 				}

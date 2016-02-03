@@ -13,37 +13,37 @@
 	<div class="calculator">
 		<div class="body">
 			<div class="screen">
-				<div class="history"><span class="overflow">80 + 8 / 12312312313212313213212313246545645645646546546546 + 2131 + 4654</span></div>
-				<div class="current overflow"><span>1234567890.123</span></div>
+				<div class="history"><span class="overflow" id="history">0</span></div>
+				<div class="current"><span id="screen">0</span></div>
 			</div>
 			<div>
-				<span class="key function">AC</span>
-				<span class="key function">C</span>
-				<span class="key operator">&divide;</span>
-				<span class="key operator multiply active">&times;</span>
+				<span class="key function" data-value="c">C</span>
+				<span class="key operator" data-value="per">&#37;</span>
+				<span class="key operator" data-value="div">&divide;</span>
+				<span class="key operator multiply"  data-value="mul">&times;</span>
 			</div>
 			<div>
-				<span class="key">7</span>
-				<span class="key">8</span>
-				<span class="key">9</span>
-				<span class="key operator">&#45;</span>
+				<span class="key" data-value="7">7</span>
+				<span class="key" data-value="8">8</span>
+				<span class="key" data-value="9">9</span>
+				<span class="key operator" data-value="sub">&#45;</span>
 			</div>
 			<div>
-				<span class="key">4</span>
-				<span class="key">5</span>
-				<span class="key">6</span>
-				<span class="key operator">&#43;</span>
+				<span class="key" data-value="4">4</span>
+				<span class="key" data-value="5">5</span>
+				<span class="key" data-value="6">6</span>
+				<span class="key operator" data-value="add">&#43;</span>
 			</div>
 			<div>
-				<span class="key">1</span>
-				<span class="key">2</span>
-				<span class="key">3</span>
-				<span class="key operator equal active">&#61;</span>
+				<span class="key" data-value="1">1</span>
+				<span class="key" data-value="2">2</span>
+				<span class="key" data-value="3">3</span>
+				<span class="key operator equal" data-value="equ">&#61;</span>
 			</div>
 			<div class="squished">
-				<span class="key backspace active"><span class="icon-backspace"></span></span>
-				<span class="key">0</span>
-				<span class="key">&#46;</span>
+				<span class="key backspace" data-value="back"><span class="icon-backspace"></span></span>
+				<span class="key" data-value="0">0</span>
+				<span class="key" data-value="dec">&#46;</span>
 			</div>
 		</div>
 	</div>
