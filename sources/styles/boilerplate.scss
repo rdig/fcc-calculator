@@ -86,6 +86,14 @@ $github-icon-light:  0px 0px;
 	-ms-user-select: none;
 	user-select: none;
 }
+@mixin enable_text_selection {
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
 @mixin fcc-footer {
 	footer {
 		top: auto;
@@ -160,6 +168,7 @@ body {
 }
 .calculator {
 	@include absolute-center;
+	@include disable_text_selection;
 	z-index: 2;
 	height: 558px;
 	.body {
@@ -192,6 +201,7 @@ body {
 				}
 			}
 			.current {
+				@include enable_text_selection;
 				margin: 30px 0 10px 6px;
 				border-left: 2px solid transparent;
 				font-size: 48px;
