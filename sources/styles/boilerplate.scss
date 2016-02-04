@@ -20,7 +20,7 @@ $calculator-operator-key-active-hover-background: #297db5;
 $calculator-operator-key-active-equal-background: #2ECC71;
 $calculator-operator-key-active-equal-hover-background: #209e55;
 $calculator-operator-key-active-text-color: #FFFFFF;
-$calculator-screen-overflow-border-color: #222b34;
+$calculator-screen-overflow-border-color: #b3382c;
 $calculator-history-border-color: #495968;
 $calculator-history-text-color: #BDC3C7;
 $calculator-key-text-color-disabled: #35495D;
@@ -205,7 +205,7 @@ body {
 			.current {
 				@include enable_text_selection;
 				margin: 30px 0 10px 6px;
-				border-left: 2px solid transparent;
+				border-left: 1px solid transparent;
 				font-size: 48px;
 				line-height: 48px;
 				white-space: nowrap;
