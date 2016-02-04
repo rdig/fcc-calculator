@@ -5,12 +5,13 @@ const Calculator = class {
 		let mem = {
 			chain: [],
 			current: '0',
-			decimal: false
+			decimal: false,
+			operator: false
 		};
 
 		this.config = {};
 
-		// Handle the memmory i/o
+		// Handle the shadow memmory i/o
 		this.mem = {
 			get current() {
 				return mem.current;
@@ -27,9 +28,22 @@ const Calculator = class {
 			get chain() {
 				return mem.chain;
 			},
-			set chain(array) {
-				mem.chain = array;
+			set chain(value) {
+				mem.chain.push(value);
+			},
+			get operator() {
+				return mem.operator;
+			},
+			set operator(bool) {
+				mem.operator = bool;
+			},
+			chainReset() {
+				mem.chain = [];
+			},
+			chainReplaceLast(value) {
+				mem.chain.splice(-1, 1, value);
 			}
+
 		};
 
 		// Select the elements that were passed via CONFIG
@@ -75,7 +89,7 @@ const Calculator = class {
 				} else {
 					dashboard.screen(this.config.overflow).off();
 				}
-				display(this.mem.current);
+				refresh.screen();
 			}.bind(this);
 
 			const _removeLastCurrent = function() {
@@ -89,18 +103,39 @@ const Calculator = class {
 					if (this.mem.current.length < 11) {
 						dashboard.screen(this.config.overflow).off();
 					}
-					display(this.mem.current);
+					refresh.screen();
 				}
 			}.bind(this);
 
 			const _clearAll = function() {
-				this.mem.chain = [];
+				this.mem.chainReset();
 				this.mem.current = '0';
 				this.mem.decimal = false;
+				this.mem.operator = false;
 				dashboard.key(this.config.backspace).off();
 				dashboard.key(this.config.operators).off();
 				dashboard.screen(this.config.overflow).off();
-				display(this.mem.current);
+				refresh.history();
+				refresh.screen();
+			}.bind(this);
+
+			const _addToChain = function(operator, percent = false) {
+				if (percent) {
+					console.log('Percent function not implemented yet');
+					return;
+				}
+				if (this.mem.current !== '0') {
+					this.mem.operator = true;
+					this.mem.chain = this.mem.current;
+					this.mem.chain = operator;
+					this.mem.current = '0';
+				} else {
+					if (this.mem.operator) {
+						this.mem.chainReplaceLast(operator);
+					}
+				}
+				refresh.history();
+				refresh.screen();
 			}.bind(this);
 
 			return {
@@ -115,15 +150,27 @@ const Calculator = class {
 				},
 				decimal: function() {
 					_addCurrentMem('.', true);
+				},
+				operator: function(operator, percent) {
+					_addToChain(operator, percent);
 				}
 			}
 
 		}.bind(this);
 
 		// Perfom actions on the calculator display
-		const display = function(value) {
-			this.config.screen.html(value);
-		}.bind(this);
+		const refresh = {
+			screen: function() {
+				this.config.screen.html(this.mem.current);
+			}.bind(this),
+			history: function() {
+				if (this.mem.chain.length > 0) {
+					this.config.history.html(this.mem.chain.join(' '));
+				} else {
+					this.config.history.html('0');
+				}
+			}.bind(this)
+		}
 
 		// Visuals of the calculator interface (functions / operators / screen)
 		const dashboard = {
@@ -162,19 +209,19 @@ const Calculator = class {
 						break;
 					// Operator: Addition
 					case 'add':
-						console.log('add')
+						shadowMemory().operator('+');
 						break;
 					// Operator: Subtraction
 					case 'sub':
-						console.log('subtract')
+						shadowMemory().operator('-');
 						break;
 					// Operator: Multiplication
 					case 'mul':
-						console.log('multiply')
+						shadowMemory().operator('×');
 						break;
 					// Operator: Division
 					case 'div':
-						console.log('divide')
+						shadowMemory().operator('÷');
 						break;
 					// Operator: Percent
 					case 'per':
@@ -205,10 +252,11 @@ const Calculator = class {
 		// element hooks, will be passed to jquery's selector
 		keys: '.key',
 		screen: '#screen',
+		history: '#history',
 		overflow: '.current',
 		backspace: '.backspace',
 		operators: '.operator'
-		
+
 	});
 
 }());
