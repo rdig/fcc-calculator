@@ -12,6 +12,11 @@ const Calculator = class {
 			total: false
 		};
 
+		this.notifications = {
+			'total': 'Result',
+			'number-too-long': 'Number too long to display'
+		}
+
 		this.config = {};
 
 		// Handle the shadow memmory i/o
@@ -129,8 +134,10 @@ const Calculator = class {
 				// If the number doesn't fit on the screen add overflow visual que
 				if (this.mem.current.length > 10) {
 					dashboard.screen(this.config.overflow).on();
+					dashboard.notify(this.config.error, this.notifications['number-too-long']).on();
 				} else {
 					dashboard.screen(this.config.overflow).off();
+					dashboard.notify(this.config.error).off();
 				}
 				refresh.screen();
 			}.bind(this);
@@ -158,6 +165,7 @@ const Calculator = class {
 					}
 					if (this.mem.current.length < 11) {
 						dashboard.screen(this.config.overflow).off();
+						dashboard.notify(this.config.error).off();
 					}
 					refresh.screen();
 				}
@@ -174,6 +182,8 @@ const Calculator = class {
 				dashboard.key(this.config.backspace).off();
 				dashboard.key(this.config.operators).off();
 				dashboard.screen(this.config.overflow).off();
+				dashboard.notify(this.config.error).off();
+				dashboard.notify(this.config.total).off();
 				dashboard.key(this.config.numbers).enable();
 				refresh.history();
 				refresh.screen();
@@ -219,9 +229,11 @@ const Calculator = class {
 					dashboard.key(this.config.percent).on();
 				}
 				dashboard.screen(this.config.overflow).off();
+				dashboard.notify(this.config.error).off();
 				dashboard.key(this.config.backspace).off();
 				if (this.mem.chain.length > 0) {
 					this.mem.total = false;
+					dashboard.notify(this.config.total).off();
 					dashboard.key(this.config.equal).on();
 				}
 				refresh.history();
@@ -271,9 +283,9 @@ const Calculator = class {
 						dashboard.key(this.config.percent).off();
 						if (this.mem.current.length > 10) {
 							dashboard.screen(this.config.overflow).on();
+							dashboard.notify(this.config.error, this.notifications['number-too-long']).on();
 						}
-						// TODO: If the current number is to long, show a warning
-						// TODO: Show a message stating this is the result
+						dashboard.notify(this.config.total, this.notifications.total).on();
 						refresh.screen();
 					}
 				}
@@ -319,7 +331,7 @@ const Calculator = class {
 			}.bind(this)
 		}
 
-		// Visuals of the calculator interface (functions / operators / screen)
+		// Visuals of the calculator interface (functions / operators / screen / messages)
 		const dashboard = {
 			key: function(element) {
 				return {
@@ -344,6 +356,16 @@ const Calculator = class {
 					},
 					off: function() {
 						element.removeClass('overflow');
+					}
+				}
+			},
+			notify: function(element, message = '') {
+				return {
+					on: function() {
+						element.html(message);
+					},
+					off: function() {
+						element.html('');
 					}
 				}
 			}
@@ -411,7 +433,9 @@ const Calculator = class {
 		backspace: '.backspace',
 		operators: '.operator',
 		percent: '.percent',
-		equal: '.equal'
+		equal: '.equal',
+		error: '#error',
+		total: '#total'
 
 	});
 

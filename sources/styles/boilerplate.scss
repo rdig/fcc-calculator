@@ -226,7 +226,7 @@ body {
 					font-size: 11px;
 					opacity: 0.9;
 					&.error {
-						max-width: 50%;
+						max-width: 70%;
 						white-space: nowrap;
 						overflow: hidden;
 						text-overflow: ellipsis;
@@ -236,7 +236,7 @@ body {
 						color: $error-text-color;
 					}
 					&.total {
-						max-width: 50%;
+						max-width: 30%;
 						white-space: nowrap;
 						overflow: hidden;
 						text-overflow: ellipsis;
