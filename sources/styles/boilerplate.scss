@@ -12,10 +12,10 @@ $calculator-key-background: transparent;
 $calculator-key-background-hover: #35495D;
 $calculator-key-text-color-active: #62b7f0;
 $calculator-function-key-text-color: #3498DB;
-$calculator-operator-key-initial-background: #35495D;
-$calculator-operator-key-initial-hover-background: #293642;
 $calculator-operator-key-text-color: #FFFFFF;
-$calculator-operator-key-active-background: #3498DB;
+$calculator-operator-key-initial-text-color: #35495D;
+$calculator-operator-key-initial-background: transparent;
+$calculator-operator-key-active-background: #35495D;
 $calculator-operator-key-active-hover-background: #297db5;
 $calculator-operator-key-active-equal-background: #2ECC71;
 $calculator-operator-key-active-equal-hover-background: #209e55;
@@ -259,10 +259,11 @@ body {
 				}
 			}
 			&.operator {
+				color: $calculator-operator-key-initial-text-color;
 				background-color: $calculator-operator-key-initial-background;
 				transition: background-color 0.3s ease-in-out;
 				&:active {
-					color: $calculator-key-text-color;
+					//color: $calculator-key-text-color;
 				}
 				&.active {
 					color: $calculator-operator-key-active-text-color;
@@ -271,7 +272,7 @@ body {
 						background-color: $calculator-operator-key-active-hover-background;
 					}
 					&:active {
-						color: $calculator-operator-key-active-background;
+						color: $calculator-key-text-color-active;
 						background-color: $calculator-key-background;
 					}
 				}
