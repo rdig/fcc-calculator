@@ -23,6 +23,7 @@ $calculator-operator-key-active-text-color: #FFFFFF;
 $calculator-screen-overflow-border-color: #222b34;
 $calculator-history-border-color: #495968;
 $calculator-history-text-color: #BDC3C7;
+$calculator-key-text-color-disabled: #35495D;
 
 $sprite-map: '../media/sprites/rg-fcc-calculator-sprite_v1.svg';
 $sprite-map-alt: '../media/sprites/rg-fcc-calculator-sprite_v1.png';
@@ -247,15 +248,21 @@ body {
 				background-color: $calculator-key-background;
 				color: $calculator-key-text-color-active;
 			}
+			&.disabled {
+				color: $calculator-key-text-color-disabled;
+				&:hover {
+					background-color: transparent;
+				}
+				&:active {
+					background-color: transparent;
+					color: $calculator-key-text-color-disabled;
+				}
+			}
 			&.operator {
 				background-color: $calculator-operator-key-initial-background;
 				transition: background-color 0.3s ease-in-out;
-				&:hover {
-					background-color: $calculator-operator-key-initial-hover-background;
-				}
 				&:active {
-					color: $calculator-operator-key-active-background;
-					background-color: $calculator-key-background;
+					color: $calculator-key-text-color;
 				}
 				&.active {
 					color: $calculator-operator-key-active-text-color;

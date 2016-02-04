@@ -6,7 +6,9 @@ const Calculator = class {
 			chain: [],
 			current: '0',
 			decimal: false,
-			operator: false
+			operator: false,
+			multiply: false,
+			percent: false
 		};
 
 		this.config = {};
@@ -31,19 +33,30 @@ const Calculator = class {
 			set chain(value) {
 				mem.chain.push(value);
 			},
+			chainReset() {
+				mem.chain = [];
+			},
+			chainReplaceLast(value) {
+				mem.chain.splice(-1, 1, value);
+			},
 			get operator() {
 				return mem.operator;
 			},
 			set operator(bool) {
 				mem.operator = bool;
 			},
-			chainReset() {
-				mem.chain = [];
+			get multiply() {
+				return mem.multiply;
 			},
-			chainReplaceLast(value) {
-				mem.chain.splice(-1, 1, value);
+			set multiply(bool) {
+				mem.multiply = bool;
+			},
+			get percent() {
+				return mem.percent;
+			},
+			set percent(bool) {
+				mem.percent = bool;
 			}
-
 		};
 
 		// Select the elements that were passed via CONFIG
@@ -66,6 +79,10 @@ const Calculator = class {
 		const shadowMemory = function() {
 
 			const _addCurrentMem = function(val, decimal = false) {
+				console.log(this.mem.percent);
+				if (this.mem.percent) {
+					return;
+				}
 				if (this.mem.current !== '0') {
 					if (decimal) {
 						if (!this.mem.decimal) {
@@ -77,11 +94,20 @@ const Calculator = class {
 						dashboard.key();
 					}
 				} else {
+					if (val === '0') {
+						return;
+					}
 					if (!decimal) {
 						this.mem.current = val;
+					} else {
+						this.mem.current += val;
+						this.mem.decimal = true;
 					}
 					dashboard.key(this.config.backspace).on();
 					dashboard.key(this.config.operators).on();
+					if (!this.mem.multiply) {
+						dashboard.key(this.config.percent).off();
+					}
 				}
 				// If the number doesn't fit on the screen add overflow visual que
 				if (this.mem.current.length > 10) {
@@ -95,8 +121,9 @@ const Calculator = class {
 			const _removeLastCurrent = function() {
 				if (this.mem.current !== '0') {
 					this.mem.current = this.mem.current.slice(0, -1);
-					if (this.mem.current === '') {
+					if ((this.mem.current === '') || (this.mem.current === '0')) {
 						this.mem.current = '0';
+						this.mem.decimal = false;
 						dashboard.key(this.config.backspace).off();
 						dashboard.key(this.config.operators).off();
 					}
@@ -112,28 +139,50 @@ const Calculator = class {
 				this.mem.current = '0';
 				this.mem.decimal = false;
 				this.mem.operator = false;
+				this.mem.multiply = false;
+				this.mem.percent = false;
 				dashboard.key(this.config.backspace).off();
 				dashboard.key(this.config.operators).off();
 				dashboard.screen(this.config.overflow).off();
+				dashboard.key(this.config.numbers).enable();
 				refresh.history();
 				refresh.screen();
 			}.bind(this);
 
-			const _addToChain = function(operator, percent = false) {
-				if (percent) {
-					console.log('Percent function not implemented yet');
+			const _addToChain = function(operator = '', percent = false, multiply = this.mem.multiply) {
+				if (percent && !multiply) {
 					return;
 				}
 				if (this.mem.current !== '0') {
 					this.mem.operator = true;
-					this.mem.chain = this.mem.current;
+					this.mem.chain = parseFloat(this.mem.current, 10);
 					this.mem.chain = operator;
 					this.mem.current = '0';
+					this.mem.decimal = false;
+					this.mem.multiply = multiply;
+					this.mem.percent = percent;
+					if (percent) {
+						this.mem.multiply = false;
+					}
 				} else {
-					if (this.mem.operator) {
-						this.mem.chainReplaceLast(operator);
+					if (!percent) {
+						if (this.mem.operator) {
+							this.mem.chainReplaceLast(operator);
+							this.mem.multiply = multiply;
+							this.mem.percent = percent;
+						}
 					}
 				}
+				dashboard.key(this.config.numbers).enable();
+				dashboard.key(this.config.percent).off();
+				if (this.mem.percent) {
+					dashboard.key(this.config.numbers).disable();
+				}
+				if (this.mem.multiply) {
+					dashboard.key(this.config.percent).on();
+				}
+				dashboard.screen(this.config.overflow).off();
+				dashboard.key(this.config.backspace).off();
 				refresh.history();
 				refresh.screen();
 			}.bind(this);
@@ -151,8 +200,8 @@ const Calculator = class {
 				decimal: function() {
 					_addCurrentMem('.', true);
 				},
-				operator: function(operator, percent) {
-					_addToChain(operator, percent);
+				operator: function(operator, percent, multiply) {
+					_addToChain(operator, percent, multiply);
 				}
 			}
 
@@ -181,6 +230,12 @@ const Calculator = class {
 					},
 					off: function() {
 						element.removeClass('active');
+					},
+					disable: function() {
+						element.addClass('disabled');
+					},
+					enable: function() {
+						element.removeClass('disabled');
 					}
 				}
 			},
@@ -209,23 +264,23 @@ const Calculator = class {
 						break;
 					// Operator: Addition
 					case 'add':
-						shadowMemory().operator('+');
+						shadowMemory().operator('+', false, false);
 						break;
 					// Operator: Subtraction
 					case 'sub':
-						shadowMemory().operator('-');
+						shadowMemory().operator('-', false, false);
 						break;
 					// Operator: Multiplication
 					case 'mul':
-						shadowMemory().operator('×');
+						shadowMemory().operator('×', false, true);
 						break;
 					// Operator: Division
 					case 'div':
-						shadowMemory().operator('÷');
+						shadowMemory().operator('÷', false, false);
 						break;
 					// Operator: Percent
 					case 'per':
-						console.log('percent of')
+						shadowMemory().operator('%', true);
 						break;
 					// Operator: Equal
 					case 'equ':
@@ -254,8 +309,10 @@ const Calculator = class {
 		screen: '#screen',
 		history: '#history',
 		overflow: '.current',
+		numbers: '.number',
 		backspace: '.backspace',
-		operators: '.operator'
+		operators: '.operator',
+		percent: '.percent'
 
 	});
 
