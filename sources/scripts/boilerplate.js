@@ -141,11 +141,9 @@ const Calculator = class {
 				}
 				if (this.mem.current.indexOf('.') === -1) {
 					this.mem.decimal = false;
-					if (this.mem.current !== '0') {
-						dashboard.key(this.config.operators).on();
-						if (this.mem.chain.length < 1) {
-							dashboard.key(this.config.equal).off();
-						}
+					dashboard.key(this.config.operators).on();
+					if (this.mem.chain.length < 1) {
+						dashboard.key(this.config.equal).off();
 					}
 				}
 				if (this.mem.total) {
@@ -156,7 +154,9 @@ const Calculator = class {
 				}
 				if (this.mem.current.length < 11) {
 					dashboard.screen(this.config.overflow).off();
-					dashboard.notify(this.config.error).off();
+					if (this.mem.chain.join('').length < 24) {
+						dashboard.notify(this.config.error).off();
+					}
 				}
 				refresh.screen();
 			}.bind(this);

@@ -10,8 +10,9 @@ $calculator-background: #2C3E50;
 $calculator-key-text-color: #BDC3C7;
 $calculator-key-background: transparent;
 $calculator-key-background-hover: #35495D;
-$calculator-key-text-color-active: #62b7f0;
+$calculator-key-text-color-active: #3498DB;
 $calculator-function-key-text-color: #3498DB;
+$calculator-function-key-active-border-color: #3498DB;
 $calculator-operator-key-text-color: #FFFFFF;
 $calculator-operator-key-initial-text-color: #35495D;
 $calculator-operator-key-initial-background: transparent;
@@ -26,6 +27,8 @@ $calculator-history-text-color: #BDC3C7;
 $calculator-key-text-color-disabled: #35495D;
 $error-text-color: #df4536;
 $total-text-color: #2cde77;
+$calculator-screen-copy-text-color: #71eca5;
+$calculator-copy-text-color: #FFFFFF;
 
 $sprite-map: '../media/sprites/rg-fcc-calculator-sprite_v1.svg';
 $sprite-map-alt: '../media/sprites/rg-fcc-calculator-sprite_v1.png';
@@ -186,7 +189,6 @@ body {
 			@include calculator_shadow_hover;
 		}
 		.screen {
-			//@include debug;
 			text-align: right;
 			padding: 15px 16px 34px 16px;
 			.history {
@@ -212,6 +214,7 @@ body {
 				line-height: 48px;
 				white-space: nowrap;
 				overflow: hidden;
+				transition: background-color 0.3s ease-in-out;
 				span {
 					min-height: 67px;
 					text-align: right;
@@ -219,6 +222,13 @@ body {
 				}
 				&.overflow {
 					border-color: $calculator-screen-overflow-border-color;
+				}
+				&.copy {
+					cursor: default;
+					transition: color 0.3s ease-in-out;
+					&:hover {
+						color: $calculator-screen-copy-text-color;
+					}
 				}
 			}
 			.notifications {
@@ -264,17 +274,20 @@ body {
 			color: $calculator-key-text-color;
 			background: $calculator-key-background;
 			border-radius: 40px;
-			border: none;
+			border: 2px solid transparent;
 			text-align: center;
 			font-size: 30px;
-			line-height: 63px;
+			line-height: 61px;
 			margin: 8px 2px 0 2px;
 			@include disable_text_selection;
 			&:hover {
 				background-color: $calculator-key-background-hover;
 				transition: background-color 0.3s ease-in-out;
+				transition: all 0.3s ease-in-out;
 			}
 			&:active {
+				border-color: $calculator-key-background-hover;
+				//background-color: transparent;
 				background-color: $calculator-key-background;
 				color: $calculator-key-text-color-active;
 			}
@@ -289,11 +302,12 @@ body {
 				}
 			}
 			&.operator {
+				line-height: 60px;
 				color: $calculator-operator-key-initial-text-color;
 				background-color: $calculator-operator-key-initial-background;
 				transition: background-color 0.3s ease-in-out;
 				&:active {
-					//color: $calculator-key-text-color;
+					border-color: transparent;
 				}
 				&.active {
 					color: $calculator-operator-key-active-text-color;
@@ -302,6 +316,7 @@ body {
 						background-color: $calculator-operator-key-active-hover-background;
 					}
 					&:active {
+						border-color: $calculator-function-key-active-border-color;
 						color: $calculator-key-text-color-active;
 						background-color: $calculator-key-background;
 					}
@@ -320,11 +335,12 @@ body {
 						&:active {
 							color: $calculator-operator-key-active-equal-background;
 							background-color: $calculator-key-background;
+							border-color: $calculator-operator-key-active-equal-background;
 						}
 					}
 				}
 				&.multiply {
-					line-height: 59px;
+					line-height: 56px;
 				}
 			}
 			&.function {
@@ -337,6 +353,7 @@ body {
 			&.backspace {
 				&:hover {
 					background-color: transparent;
+					border-color: transparent;
 				}
 				&.active {
 					.icon-backspace {
@@ -350,6 +367,7 @@ body {
 							background-position: $backspace-click;
 						}
 						background-color: transparent;
+						border-color: transparent;
 					}
 				}
 			}
