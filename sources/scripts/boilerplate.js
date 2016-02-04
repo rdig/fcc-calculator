@@ -8,7 +8,8 @@ const Calculator = class {
 			decimal: false,
 			operator: false,
 			multiply: false,
-			percent: false
+			percent: false,
+			total: false
 		};
 
 		this.config = {};
@@ -56,6 +57,12 @@ const Calculator = class {
 			},
 			set percent(bool) {
 				mem.percent = bool;
+			},
+			get total() {
+				return mem.total;
+			},
+			set total(bool) {
+				mem.total = bool;
 			}
 		};
 
@@ -92,6 +99,9 @@ const Calculator = class {
 					} else {
 						this.mem.current += val;
 						dashboard.key(this.config.operators).on();
+						if (this.mem.chain.length < 1) {
+							dashboard.key(this.config.equal).off();
+						}
 						if (!this.mem.multiply) {
 							dashboard.key(this.config.percent).off();
 						}
@@ -103,6 +113,9 @@ const Calculator = class {
 					if (!decimal) {
 						this.mem.current = val;
 						dashboard.key(this.config.operators).on();
+						if (this.mem.chain.length < 1) {
+							dashboard.key(this.config.equal).off();
+						}
 					} else {
 						this.mem.current += val;
 						this.mem.decimal = true;
@@ -157,6 +170,7 @@ const Calculator = class {
 				this.mem.operator = false;
 				this.mem.multiply = false;
 				this.mem.percent = false;
+				this.mem.total = false;
 				dashboard.key(this.config.backspace).off();
 				dashboard.key(this.config.operators).off();
 				dashboard.screen(this.config.overflow).off();
@@ -206,8 +220,63 @@ const Calculator = class {
 				}
 				dashboard.screen(this.config.overflow).off();
 				dashboard.key(this.config.backspace).off();
+				if (this.mem.chain.length > 0) {
+					this.mem.total = false;
+					dashboard.key(this.config.equal).on();
+				}
 				refresh.history();
 				refresh.screen();
+			}.bind(this);
+
+			const _calculateTotal = function() {
+				let resultChain = [];
+				if (this.mem.chain.length > 0) {
+					if (this.mem.current.indexOf('.') === this.mem.current.length - 1) {
+						dashboard.key(this.config.equal).off();
+						return;
+					}
+					if (!this.mem.total) {
+						if (this.mem.percent) {
+							if (this.mem.current !== '0') {
+								this.mem.chain = '+' + parseFloat(this.mem.current, 10);
+								// TODO: If the chain is to long, show a warning
+							}
+						} else {
+							if (this.mem.current !== '0') {
+								this.mem.chain = parseFloat(this.mem.current, 10);
+								// TODO: If the chain is to long, show a warning
+							} else {
+								this.mem.chainReplaceLast('');
+							}
+						}
+						resultChain = this.mem.chain.slice();
+						refresh.result(resultChain);
+						this.mem.chainReset();
+						resultChain = resultChain.map((group) => {
+							if (group === '×') {
+								return '*';
+							}
+							if (group === '÷') {
+								return '/';
+							}
+							if (group === '%') {
+								return '/'+100;
+							}
+							return group;
+						});
+						this.mem.current = eval(resultChain.join('')).toString();
+						this.mem.total = true;
+						this.mem.multiply = false;
+						dashboard.key(this.config.equal).off();
+						dashboard.key(this.config.percent).off();
+						if (this.mem.current.length > 10) {
+							dashboard.screen(this.config.overflow).on();
+						}
+						// TODO: If the current number is to long, show a warning
+						// TODO: Show a message stating this is the result
+						refresh.screen();
+					}
+				}
 			}.bind(this);
 
 			return {
@@ -225,6 +294,9 @@ const Calculator = class {
 				},
 				operator: function(operator, percent, multiply) {
 					_addToChain(operator, percent, multiply);
+				},
+				equal: function() {
+					_calculateTotal();
 				}
 			}
 
@@ -241,6 +313,9 @@ const Calculator = class {
 				} else {
 					this.config.history.html('0');
 				}
+			}.bind(this),
+			result: function(array) {
+				this.config.history.html(array.join(' ') + ' =');
 			}.bind(this)
 		}
 
@@ -307,7 +382,7 @@ const Calculator = class {
 						break;
 					// Operator: Equal
 					case 'equ':
-						console.log('equals')
+						shadowMemory().equal();
 						break;
 					// Special: Decimal point
 					case 'dec':
@@ -335,7 +410,8 @@ const Calculator = class {
 		numbers: '.number',
 		backspace: '.backspace',
 		operators: '.operator',
-		percent: '.percent'
+		percent: '.percent',
+		equal: '.equal'
 
 	});
 
