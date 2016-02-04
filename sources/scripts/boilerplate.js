@@ -14,7 +14,8 @@ const Calculator = class {
 
 		this.notifications = {
 			'total': 'Result',
-			'number-too-long': 'Number too long to display'
+			'number-too-long': 'Number too long to display',
+			'chain-too-long': 'Too many operations to display'
 		}
 
 		this.config = {};
@@ -252,17 +253,26 @@ const Calculator = class {
 							if (this.mem.current !== '0') {
 								this.mem.chain = '+' + parseFloat(this.mem.current, 10);
 								// TODO: If the chain is to long, show a warning
+
+								// if (this.mem.chain.join('').length > 34) {
+								// 	dashboard.notify(this.config.error, this.notifications['chain-too-long']).on();
+								// }
 							}
 						} else {
 							if (this.mem.current !== '0') {
 								this.mem.chain = parseFloat(this.mem.current, 10);
 								// TODO: If the chain is to long, show a warning
+
 							} else {
 								this.mem.chainReplaceLast('');
 							}
 						}
 						resultChain = this.mem.chain.slice();
 						refresh.result(resultChain);
+						console.log(this.mem.chain.join('').length);
+						if (this.mem.chain.join('').length > 32) {
+							dashboard.notify(this.config.error, this.notifications['chain-too-long']).on();
+						}
 						this.mem.chainReset();
 						resultChain = resultChain.map((group) => {
 							if (group === '×') {
