@@ -79,7 +79,6 @@ const Calculator = class {
 		const shadowMemory = function() {
 
 			const _addCurrentMem = function(val, decimal = false) {
-				console.log(this.mem.percent);
 				if (this.mem.percent) {
 					return;
 				}
@@ -88,10 +87,14 @@ const Calculator = class {
 						if (!this.mem.decimal) {
 							this.mem.current += val;
 							this.mem.decimal = true;
+							dashboard.key(this.config.operators).off();
 						}
 					} else {
 						this.mem.current += val;
-						dashboard.key();
+						dashboard.key(this.config.operators).on();
+						if (!this.mem.multiply) {
+							dashboard.key(this.config.percent).off();
+						}
 					}
 				} else {
 					if (val === '0') {
@@ -99,12 +102,13 @@ const Calculator = class {
 					}
 					if (!decimal) {
 						this.mem.current = val;
+						dashboard.key(this.config.operators).on();
 					} else {
 						this.mem.current += val;
 						this.mem.decimal = true;
+						dashboard.key(this.config.operators).off();
 					}
 					dashboard.key(this.config.backspace).on();
-					dashboard.key(this.config.operators).on();
 					if (!this.mem.multiply) {
 						dashboard.key(this.config.percent).off();
 					}
@@ -126,6 +130,18 @@ const Calculator = class {
 						this.mem.decimal = false;
 						dashboard.key(this.config.backspace).off();
 						dashboard.key(this.config.operators).off();
+					}
+					if (this.mem.current.indexOf('.') === this.mem.current.length - 1) {
+						dashboard.key(this.config.operators).off();
+					}
+					if (this.mem.current.indexOf('.') === -1) {
+						this.mem.decimal = false;
+						if (this.mem.current !== '0') {
+							dashboard.key(this.config.operators).on();
+						}
+						if (!this.mem.multiply) {
+							dashboard.key(this.config.percent).off();
+						}
 					}
 					if (this.mem.current.length < 11) {
 						dashboard.screen(this.config.overflow).off();
@@ -154,6 +170,9 @@ const Calculator = class {
 					return;
 				}
 				if (this.mem.current !== '0') {
+					if (this.mem.current.indexOf('.') === this.mem.current.length - 1) {
+						return;
+					}
 					this.mem.operator = true;
 					this.mem.chain = parseFloat(this.mem.current, 10);
 					this.mem.chain = operator;
@@ -167,7 +186,11 @@ const Calculator = class {
 				} else {
 					if (!percent) {
 						if (this.mem.operator) {
-							this.mem.chainReplaceLast(operator);
+							if (this.mem.percent) {
+								this.mem.chain = operator;
+							} else {
+								this.mem.chainReplaceLast(operator);
+							}
 							this.mem.multiply = multiply;
 							this.mem.percent = percent;
 						}
