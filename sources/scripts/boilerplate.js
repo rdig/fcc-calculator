@@ -185,6 +185,9 @@ const Calculator = class {
 					if (this.mem.chain.length < 1) {
 						dashboard.key(this.config.equal).off();
 					}
+					if (this.mem.percent) {
+						dashboard.key(this.config.percent).off();
+					}
 				}
 				if (this.mem.total) {
 					dashboard.notify(this.config.total).off();
