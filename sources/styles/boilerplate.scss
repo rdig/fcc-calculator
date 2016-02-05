@@ -29,6 +29,8 @@ $error-text-color: #df4536;
 $total-text-color: #2cde77;
 $calculator-screen-copy-text-color: #71eca5;
 $calculator-copy-text-color: #FFFFFF;
+$keypress-border-color: #24313d;
+$keypress-border-color-equal: #14191f;
 
 $sprite-map: '../media/sprites/rg-fcc-calculator-sprite_v1.svg';
 $sprite-map-alt: '../media/sprites/rg-fcc-calculator-sprite_v1.png';
@@ -280,6 +282,7 @@ body {
 			line-height: 61px;
 			margin: 8px 2px 0 2px;
 			@include disable_text_selection;
+			transition: all 0.1s ease-in-out;
 			&:hover {
 				background-color: $calculator-key-background-hover;
 				transition: background-color 0.3s ease-in-out;
@@ -291,8 +294,12 @@ body {
 				background-color: $calculator-key-background;
 				color: $calculator-key-text-color-active;
 			}
+			&.pressed {
+				border-color: $keypress-border-color;
+			}
 			&.disabled {
 				color: $calculator-key-text-color-disabled;
+				border-color: transparent;
 				&:hover {
 					background-color: transparent;
 				}
@@ -309,9 +316,13 @@ body {
 				&:active {
 					border-color: transparent;
 				}
+				&.pressed {
+					border-color: transparent;
+				}
 				&.active {
 					color: $calculator-operator-key-active-text-color;
 					background: $calculator-operator-key-active-background;
+
 					&:hover {
 						background-color: $calculator-operator-key-active-hover-background;
 					}
@@ -320,12 +331,16 @@ body {
 						color: $calculator-key-text-color-active;
 						background-color: $calculator-key-background;
 					}
+					&.pressed {
+						border-color: $keypress-border-color;
+					}
 				}
 				&.equal {
 					line-height: 0;
 					height: 138px;
 					margin-bottom: -173px;
 					padding-top: 105px;
+					border-color: transparent;
 					&.active {
 						background: $calculator-operator-key-active-equal-background;
 						color: $calculator-operator-key-active-text-color;
@@ -336,6 +351,9 @@ body {
 							color: $calculator-operator-key-active-equal-background;
 							background-color: $calculator-key-background;
 							border-color: $calculator-operator-key-active-equal-background;
+						}
+						&.pressed {
+							border-color: $keypress-border-color-equal;
 						}
 					}
 				}
@@ -351,8 +369,12 @@ body {
 				}
 			}
 			&.backspace {
+				transition: all 0s;
 				&:hover {
 					background-color: transparent;
+					border-color: transparent;
+				}
+				&.pressed {
 					border-color: transparent;
 				}
 				&.active {
@@ -369,6 +391,11 @@ body {
 						background-color: transparent;
 						border-color: transparent;
 					}
+					&.pressed {
+						.icon-backspace {
+							background-position: $backspace-click;
+						}
+					}
 				}
 			}
 			.icon-backspace {
@@ -381,5 +408,6 @@ body {
 				background-position: $backspace-inactive;
 			}
 		}
+
 	}
 }

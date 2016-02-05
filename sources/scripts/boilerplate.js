@@ -181,7 +181,6 @@ const Calculator = class {
 			const _addToChain = function(operator = '', percent = false) {
 				if (this.mem.percent) {
 					if (percent) {
-						console.log('ret');
 						return;
 					}
 					this.mem.chain = operator;
