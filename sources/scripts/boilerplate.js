@@ -456,6 +456,7 @@ const Calculator = class {
 					// Keypress Backspace
 					case 8:
 						dashboard.key(event.data.Calculator.config._keyboard.backspace).press();
+						event.preventDefault();
 						break;
 					// Keypress Esc (Escape)
 					case 27:
@@ -531,6 +532,7 @@ const Calculator = class {
 						break;
 					// Keypress Add (+) + Equal (=)
 					case 61:
+					case 187: // Different keyCode on Chrome
 						if (event.shiftKey) {
 							dashboard.key(event.data.Calculator.config._keyboard.add).press();
 						} else {
@@ -543,6 +545,7 @@ const Calculator = class {
 						break;
 					// Keypress Subtract (-)
 					case 173:
+					case 189: // Different keyCode on Chrome
 						if (!event.shiftKey) {
 							dashboard.key(event.data.Calculator.config._keyboard.subtract).press();
 						}
