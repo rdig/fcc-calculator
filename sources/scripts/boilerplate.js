@@ -17,7 +17,33 @@ const Calculator = class {
 			'chain-too-long': 'Too many operations to display'
 		}
 
-		this.config = {};
+		// We could of just send the keys directly to _shadowMemory.key() via update()
+		// But that way we couldn't simulate a keypress on the interface
+		// So instead we area calling triggering the click event.
+		// See dashboard.key().press()
+		this.config = {
+			_keyboard: {
+				zero: '0',
+				one: '1',
+				two: '2',
+				three: '3',
+				four: '4',
+				five: '5',
+				six: '6',
+				seven: '7',
+				eight: '8',
+				nine: '9',
+				decimal: 'dec',
+				add: 'add',
+				subtract: 'sub',
+				multiply: 'mul',
+				divide: 'div',
+				percent: 'per',
+				total: 'equ',
+				backspace: 'back',
+				clear: 'c'
+			}
+		};
 
 		// Handle the shadow memmory i/o
 		this.mem = {
@@ -72,9 +98,23 @@ const Calculator = class {
 			}
 		}
 
+		// rewite this.config._keyboard object with the selected element (based on the initial value)
+		// this value represent data-value
+		for (let prop in this.config._keyboard) {
+			if ((this.config._keyboard[prop]) && (this.config._keyboard[prop] !== '')) {
+				this.config._keyboard[prop] = $('.key[data-value=' + this.config._keyboard[prop] + ']');
+			}
+		}
+
 		// Set the click event handler for the elements
 		this.config.keys.on('click', { Calculator: this }, function(e) {
 			e.data.Calculator.update(this.dataset.value).mouseInteraction();
+		});
+
+		// Set the keydown event handler that will handle keyboard key presses
+		// These will trigger clicks on the appropriate buttons
+		$(document).keydown({ Calculator: this }, function(e) {
+			e.data.Calculator.update().keyboardInteraction(e);
 		});
 
 	}
@@ -322,6 +362,13 @@ const Calculator = class {
 					},
 					enable: function() {
 						element.removeClass('disabled');
+					},
+					press: function() {
+						element.addClass('pressed');
+						setTimeout(function() {
+							element.trigger('click');
+							element.removeClass('pressed');
+						}, 100);
 					}
 				}
 			},
@@ -391,7 +438,190 @@ const Calculator = class {
 						break;
 				}
 			},
-			keyboardInteraction: function() {}
+			keyboardInteraction: function(event) {
+				switch (event.keyCode) {
+					// BOTH KEYBOARD + KEYPAD
+					// Keypress Enter (Return)
+					case 13:
+						dashboard.key(event.data.Calculator.config._keyboard.total).press();
+						break;
+					// Keypress Delete
+					case 46:
+						dashboard.key(event.data.Calculator.config._keyboard.backspace).press();
+						break;
+					// KEYBOARD
+					// Keypress Backspace
+					case 8:
+						dashboard.key(event.data.Calculator.config._keyboard.backspace).press();
+						break;
+					// Keypress Esc (Escape)
+					case 27:
+						dashboard.key(event.data.Calculator.config._keyboard.clear).press();
+						break;
+					// Keypress 0 (Filter Closed Bracket)
+					case 48:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.zero).press();
+						}
+						break;
+					// Keypress 1 (Filter Exclamation Mark)
+					case 49:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.one).press();
+						}
+						break;
+					// Keypress 2 (Filter At)
+					case 50:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.two).press();
+						}
+						break;
+					// Keypress 3 (Filter Pound)
+					case 51:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.three).press();
+						}
+						break;
+					// Keypress 4 (Filter Dollar Sign)
+					case 52:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.four).press();
+						}
+						break;
+					// Keypress 5 + Percent
+					case 53:
+						if (event.shiftKey) {
+							// Percent
+							dashboard.key(event.data.Calculator.config._keyboard.percent).press();
+						} else {
+							// Five
+							dashboard.key(event.data.Calculator.config._keyboard.five).press();
+						}
+						break;
+					// Keypress 6  (Filter Power Sign)
+					case 54:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.six).press();
+						}
+						break;
+					// Keypress 7 (Filter Ampersand)
+					case 55:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.seven).press();
+						}
+						break;
+					// Keypress 8 + Multiplication (*)
+					case 56:
+						if (event.shiftKey) {
+							// Multiplication
+							dashboard.key(event.data.Calculator.config._keyboard.multiply).press();
+						} else {
+							// Eight
+							dashboard.key(event.data.Calculator.config._keyboard.eight).press();
+						}
+						break;
+					// Keypress 9 (Filter Open Bracket)
+					case 57:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.nine).press();
+						}
+						break;
+					// Keypress Add (+) + Equal (=)
+					case 61:
+						if (event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.add).press();
+						} else {
+							dashboard.key(event.data.Calculator.config._keyboard.total).press();
+						}
+						break;
+					// Keypress C or c (We use both versions)
+					case 67:
+						dashboard.key(event.data.Calculator.config._keyboard.clear).press();
+						break;
+					// Keypress Subtract (-)
+					case 173:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.subtract).press();
+						}
+						break;
+					// Keypress Comma (,) + Decimal (.)
+					case 188:
+					case 190:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.decimal).press();
+						}
+						break;
+					// Keypress Division (/)
+					case 191:
+						if (!event.shiftKey) {
+							dashboard.key(event.data.Calculator.config._keyboard.divide).press();
+						}
+						break;
+					// KEYPAD
+					// Keypress 0
+					case 96:
+						dashboard.key(event.data.Calculator.config._keyboard.zero).press();
+						break;
+					// Keypress 1
+					case 97:
+						dashboard.key(event.data.Calculator.config._keyboard.one).press();
+						break;
+					// Keypress 2
+					case 98:
+						dashboard.key(event.data.Calculator.config._keyboard.two).press();
+						break;
+					// Keypress 3
+					case 99:
+						dashboard.key(event.data.Calculator.config._keyboard.three).press();
+						break;
+					// Keypress 4
+					case 100:
+						dashboard.key(event.data.Calculator.config._keyboard.four).press();
+						break;
+					// Keypress 5
+					case 101:
+						dashboard.key(event.data.Calculator.config._keyboard.five).press();
+						break;
+					// Keypress 6
+					case 102:
+						dashboard.key(event.data.Calculator.config._keyboard.six).press();
+						break;
+					// Keypress 7
+					case 103:
+						dashboard.key(event.data.Calculator.config._keyboard.seven).press();
+						break;
+					// Keypress 8
+					case 104:
+						dashboard.key(event.data.Calculator.config._keyboard.eight).press();
+						break;
+					// Keypress 9
+					case 105:
+						dashboard.key(event.data.Calculator.config._keyboard.nine).press();
+						break;
+					// Keypress Multiplication (*)
+					case 106:
+						dashboard.key(event.data.Calculator.config._keyboard.multiply).press();
+						break;
+					// Keypress Subtract (-)
+					case 109:
+						dashboard.key(event.data.Calculator.config._keyboard.subtract).press();
+						break;
+					// Keypress Add (+)
+					case 107:
+						dashboard.key(event.data.Calculator.config._keyboard.add).press();
+						break;
+					// Keypress Decimal (.)
+					case 110:
+						dashboard.key(event.data.Calculator.config._keyboard.decimal).press();
+						break;
+					// Keypress Division (/)
+					case 111:
+						dashboard.key(event.data.Calculator.config._keyboard.divide).press();
+						break;
+					default:
+						break;
+				}
+			}
 		}
 	}
 };
