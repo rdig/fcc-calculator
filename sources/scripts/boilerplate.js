@@ -300,6 +300,9 @@ const Calculator = class {
 					});
 					this.mem.current = eval(resultChain.join('')).toString();
 					this.mem.total = true;
+					if (this.mem.current.indexOf('.') !== -1) {
+						this.mem.decimal = true;
+					}
 					dashboard.key(this.config.equal).off();
 					dashboard.key(this.config.backspace).on();
 					if (this.mem.current.length > 10) {
