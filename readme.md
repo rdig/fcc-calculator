@@ -1,8 +1,22 @@
 Welcome!
 
-The project is meant to replicate a simple pocket calculator
+The project is meant to replicate a simple pocket calculator.
 
 This was build to complete a [FreeCodeCamp challenge](http://www.freecodecamp.com/challenges/build-a-javascript-calculator). You can use the code as you see fit, just don't use my personal name (scrub it out). See [license](./license.md).
+
+## Features
+
+- Mouse based input
+
+- Keyboard based input (with highlighting)
+
+- Restrictions for various disallowed operations (no numbers after percent, only operators)
+
+- Operations history display
+
+- Responsive
+
+- Minimalist design
 
 ## Dependencies
 
@@ -64,3 +78,7 @@ This project is licensed under the Mozilla Public License Version 2.0. You can [
 This project uses additional libraries, each with it's own license:
 
 - `jquery` - [Copyright jQuery Foundation and other contributors](https://github.com/jquery/jquery/blob/master/LICENSE.txt)
+
+#### Icons
+
+This project uses icons by [Ilsur Aptukov](https://thenounproject.com/Ilsur/), [Julia Holmberg](https://thenounproject.com/jholmbe1/), [Alv Jørgen Bovolden](https://thenounproject.com/Alvbovo/), [Michael Senkow](https://thenounproject.com/mhsenkow/)
