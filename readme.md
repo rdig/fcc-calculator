@@ -18,6 +18,10 @@ This was build to complete a [FreeCodeCamp challenge](http://www.freecodecamp.co
 
 - Minimalist design
 
+## Screenshot
+
+![Screenshot](sources/media/images/screenshot.png "Simple Pocket Calculator")
+
 ## Dependencies
 
 This project uses gulp as it's task runner hence it needs [node.js](https://nodejs.org) to run.
