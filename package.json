@@ -1,7 +1,7 @@
 {
-  "name": "fcc-calculator",
-  "version": "0.0.1",
-  "description": "Pocket calculator. A FreeCodeCamp challenge",
+  "name": "pocket-calculator",
+  "version": "0.0.2",
+  "description": "A calculator app implemented on web technologies using mostly javascript",
   "main": "index.html",
   "scripts": {
     "dev": "gulp --gulpfile gulp-development.config.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:rdig/fcc-calculator.git"
+    "url": "git@github.com:rdig/pocket-calculator.git"
   },
   "author": "Raul Glogovetan",
   "license": "MPL-2.0",

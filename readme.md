@@ -1,6 +1,4 @@
-Welcome!
-
-The project is meant to replicate a simple pocket calculator.
+A calculator app implemented on web technologies using mostly javascript
 
 This was build to complete a [FreeCodeCamp challenge](http://www.freecodecamp.com/challenges/build-a-javascript-calculator). You can use the code as you see fit, just don't use my personal name (scrub it out). See [license](./license.md).
 
